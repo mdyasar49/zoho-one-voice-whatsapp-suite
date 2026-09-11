@@ -1,0 +1,65 @@
+{
+  "locale": [
+    "en"
+  ],
+  "service": "CRM",
+  "storage": true,
+  "type": "widget",
+  "logo": "https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg",
+  "zohoOneSuite": {
+    "supportedApps": [
+      "Zoho CRM",
+      "Zoho Books",
+      "Zoho Desk",
+      "Zoho Sign",
+      "Zoho Recruit",
+      "Zoho Cliq",
+      "Zoho Analytics"
+    ]
+  },
+  "modules": {
+    "widgets": [
+      {
+        "location": "crm.lead.rightpanel",
+        "name": "Zoho One WhatsApp AI Copilot (Leads)",
+        "url": "http://localhost:3000"
+      },
+      {
+        "location": "crm.contact.rightpanel",
+        "name": "Zoho One WhatsApp AI Copilot (Contacts)",
+        "url": "http://localhost:3000"
+      },
+      {
+        "location": "crm.deal.rightpanel",
+        "name": "Zoho One WhatsApp AI Copilot (Deals)",
+        "url": "http://localhost:3000"
+      },
+      {
+        "location": "crm.tab",
+        "name": "Zoho One Omnichannel WhatsApp Hub",
+        "url": "http://localhost:3000"
+      },
+      {
+        "location": "desk.ticket.detail.rightpanel",
+        "name": "Zoho Desk WhatsApp Ticket Sync",
+        "url": "http://localhost:3000"
+      },
+      {
+        "location": "books.invoice.detail.rightpanel",
+        "name": "Zoho Books WhatsApp Payment Link & Invoice Share",
+        "url": "http://localhost:3000"
+      }
+    ]
+  },
+  "permissions": [
+    "crm.modules.leads.ALL",
+    "crm.modules.contacts.ALL",
+    "crm.modules.deals.ALL",
+    "books.invoices.ALL",
+    "desk.tickets.ALL",
+    "sign.documents.ALL"
+  ],
+  "author": "Mohamed Yasar",
+  "version": "2.0.0",
+  "description": "Unified Omnichannel WhatsApp Cloud & Gemini AI Copilot Suite for all Zoho One products."
+}

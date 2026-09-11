@@ -1,0 +1,200 @@
+{
+  "contacts": [
+    {
+      "id": "cont_1",
+      "name": "Raveena Arun",
+      "phone": "919876543210",
+      "email": "raveena@technova.com",
+      "company": "TechNova Corp",
+      "zohoModule": "Leads",
+      "zohoRecordId": "48291000000213001",
+      "leadStatus": "Negotiation",
+      "dealValue": "₹4,50,000",
+      "tags": [
+        "High Priority",
+        "Enterprise",
+        "Zoho One Prospect"
+      ]
+    },
+    {
+      "id": "cont_2",
+      "name": "Suresh Kumar",
+      "phone": "919812345678",
+      "email": "suresh@apexglobal.in",
+      "company": "Apex Global Solutions",
+      "zohoModule": "Contacts",
+      "zohoRecordId": "48291000000345002",
+      "leadStatus": "Customer",
+      "dealValue": "₹12,00,000",
+      "tags": [
+        "Active Client",
+        "Zoho Books User"
+      ]
+    }
+  ],
+  "invoices": [
+    {
+      "id": "inv_101",
+      "contactPhone": "919876543210",
+      "invoiceNumber": "INV-2026-0042",
+      "amount": "₹1,25,000",
+      "status": "Unpaid",
+      "dueDate": "2026-09-20",
+      "pdfUrl": "https://books.zoho.com/api/v3/invoices/INV-2026-0042.pdf",
+      "paymentLink": "https://payments.zoho.com/pay/inv_101_technova"
+    },
+    {
+      "id": "inv_102",
+      "contactPhone": "919812345678",
+      "invoiceNumber": "INV-2026-0038",
+      "amount": "₹3,80,000",
+      "status": "Paid",
+      "dueDate": "2026-08-30",
+      "pdfUrl": "https://books.zoho.com/api/v3/invoices/INV-2026-0038.pdf",
+      "paymentLink": "https://payments.zoho.com/pay/inv_102_apex"
+    }
+  ],
+  "tickets": [
+    {
+      "id": "tkt_501",
+      "contactPhone": "919876543210",
+      "ticketNumber": "#ZD-8921",
+      "subject": "API Rate limits on Enterprise plan",
+      "priority": "High",
+      "status": "Open",
+      "channel": "WhatsApp",
+      "createdTime": "2026-09-11T10:37:15.889Z"
+    }
+  ],
+  "signDocuments": [
+    {
+      "id": "sign_201",
+      "contactPhone": "919876543210",
+      "docName": "Non-Disclosure Agreement (NDA) - TechNova.pdf",
+      "status": "Pending Signature",
+      "signUrl": "https://sign.zoho.com/sign/doc_201_token"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "rec_301",
+      "name": "Raveena Arun",
+      "phone": "919876543210",
+      "appliedRole": "Senior Cloud Architect",
+      "stage": "Technical Interview Round 2",
+      "interviewDate": "Tomorrow, 11:00 AM"
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg_1",
+      "contactPhone": "919876543210",
+      "direction": "inbound",
+      "sender": "Raveena Arun",
+      "text": "Hi, we received your proposal. Can you send the updated invoice and meeting link for tomorrow?",
+      "timestamp": "2026-09-11T13:37:15.890Z",
+      "status": "read"
+    },
+    {
+      "id": "msg_2",
+      "contactPhone": "919876543210",
+      "direction": "outbound",
+      "sender": "Sales Rep",
+      "text": "Hello Raveena! Absolutely, I have attached the latest Zoho Books Invoice and the demo calendar invite.",
+      "timestamp": "2026-09-11T14:37:15.890Z",
+      "status": "delivered"
+    },
+    {
+      "id": "msg_3",
+      "contactPhone": "919876543210",
+      "direction": "inbound",
+      "sender": "Raveena Arun",
+      "text": "Great! Also, please share the Zoho Sign NDA link so our legal team can sign it before the call.",
+      "timestamp": "2026-09-11T15:32:15.890Z",
+      "status": "received"
+    }
+  ],
+  "templates": [
+    {
+      "id": "tmpl_books_invoice",
+      "zohoApp": "Zoho Books",
+      "name": "Send Zoho Books Invoice & Payment Link",
+      "category": "PAYMENT",
+      "body": "Hi {{1}}, here is your invoice {{2}} for {{3}}. You can view the invoice and pay securely online here: {{4}}",
+      "variables": [
+        "Client Name",
+        "Invoice No",
+        "Amount",
+        "Payment Link"
+      ]
+    },
+    {
+      "id": "tmpl_sign_request",
+      "zohoApp": "Zoho Sign",
+      "name": "Zoho Sign Document e-Signature",
+      "category": "UTILITY",
+      "body": "Hello {{1}}, please e-sign the document '{{2}}' securely via Zoho Sign using this link: {{3}}",
+      "variables": [
+        "Client Name",
+        "Document Name",
+        "Signing Link"
+      ]
+    },
+    {
+      "id": "tmpl_desk_ticket",
+      "zohoApp": "Zoho Desk",
+      "name": "Zoho Desk Ticket Acknowledgement",
+      "category": "SUPPORT",
+      "body": "Hello {{1}}, support ticket {{2}} has been created for your request: '{{3}}'. Our support engineer is on it.",
+      "variables": [
+        "Client Name",
+        "Ticket Number",
+        "Issue Title"
+      ]
+    },
+    {
+      "id": "tmpl_recruit_interview",
+      "zohoApp": "Zoho Recruit",
+      "name": "Interview Call Confirmation",
+      "category": "UTILITY",
+      "body": "Hi {{1}}, your interview with our engineering team for {{2}} is confirmed for {{3}}. Meeting link: {{4}}",
+      "variables": [
+        "Candidate Name",
+        "Role",
+        "Date & Time",
+        "Meeting Link"
+      ]
+    },
+    {
+      "id": "tmpl_inventory_dispatch",
+      "zohoApp": "Zoho Inventory",
+      "name": "Order Dispatched & Tracking Update",
+      "category": "UTILITY",
+      "body": "Dear {{1}}, your order {{2}} has been dispatched via {{3}}. Track live shipment here: {{4}}",
+      "variables": [
+        "Customer Name",
+        "Order ID",
+        "Courier Partner",
+        "Tracking Link"
+      ]
+    }
+  ],
+  "analytics": {
+    "totalMessagesSent": 14820,
+    "deliveryRate": "99.4%",
+    "readRate": "89.2%",
+    "aiAssistedReplies": 11240,
+    "dealsInfluencedRevenue": "₹84,50,000",
+    "invoicesCollectedViaWhatsApp": "₹38,20,000",
+    "deskTicketsResolvedViaWhatsApp": 1840,
+    "signDocumentsCompleted": 430
+  },
+  "settings": {
+    "autoLeadCapture": true,
+    "aiSmartReplyEnabled": true,
+    "syncTimelineToZoho": true,
+    "zohoCliqAlerts": true,
+    "zohoDeskTicketAutoCreate": true,
+    "zohoBooksInvoiceAutoShare": true
+  }
+}
