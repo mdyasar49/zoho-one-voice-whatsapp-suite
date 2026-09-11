@@ -1,6 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import { PhoneCall, PhoneOff, Mic, Sparkles, CheckCircle2, X, Volume2, User, Globe, TrendingUp, Calendar, Zap } from 'lucide-react';
+import { 
+  Dialog, 
+  DialogTitle, 
+  DialogContent, 
+  DialogActions, 
+  Button, 
+  Chip, 
+  Typography, 
+  Avatar, 
+  Paper, 
+  LinearProgress, 
+  IconButton, 
+  Box, 
+  Slide,
+  Tooltip,
+  Divider,
+  Stack
+} from '@mui/material';
+import { 
+  PhoneInTalk, 
+  PhoneDisabled, 
+  Mic, 
+  AutoAwesome, 
+  CheckCircle, 
+  Close, 
+  VolumeUp, 
+  Person, 
+  Language, 
+  TrendingUp, 
+  EventAvailable, 
+  Bolt 
+} from '@mui/icons-material';
 import { api } from '../services/api';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export const AIVoiceCallerModal = ({ contact, onClose, onRefreshChat }) => {
   const [personas, setPersonas] = useState([]);
@@ -28,7 +63,6 @@ export const AIVoiceCallerModal = ({ contact, onClose, onRefreshChat }) => {
       setCallResult(result);
       setCallingState('in_call');
 
-      // Simulate live line-by-line speech stream
       let currentLine = 0;
       const interval = setInterval(() => {
         currentLine++;
@@ -48,167 +82,212 @@ export const AIVoiceCallerModal = ({ contact, onClose, onRefreshChat }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-3 animate-fade-in">
-      <div className="w-full max-w-xl bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl flex flex-col max-h-[90vh]">
-        {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-rose-950/40">
-              <Mic className="w-5 h-5 animate-pulse" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="text-sm font-bold text-white tracking-tight">Autonomous AI Voice Caller</h3>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">
-                  Zoho One Exclusive
-                </span>
-              </div>
-              <p className="text-xs text-slate-400">Natural voice call + instant CRM qualification & WhatsApp sync</p>
-            </div>
-          </div>
-          <button onClick={onClose} className="p-1.5 rounded-xl hover:bg-slate-800 text-slate-400 transition-colors">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+    <Dialog
+      open={true}
+      TransitionComponent={Transition}
+      keepMounted
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      PaperProps={{
+        sx: {
+          bgcolor: '#0d1e35',
+          backgroundImage: 'radial-gradient(ellipse at top, #172e50, #0d1e35)',
+          border: '1px solid #1e3a5f',
+          borderRadius: '20px',
+          color: '#ffffff'
+        }
+      }}
+    >
+      {/* Header */}
+      <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pb: 1.5, borderBottom: '1px solid #1b3252' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <Avatar sx={{ bgcolor: 'error.main', width: 40, height: 40, boxShadow: '0 4px 14px rgba(228, 37, 40, 0.4)' }}>
+            <Mic />
+          </Avatar>
+          <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 800, color: '#fff' }}>
+                Autonomous AI Voice Caller
+              </Typography>
+              <Chip label="Zoho One Exclusive" size="small" color="error" variant="outlined" sx={{ height: 20, fontSize: '0.65rem', fontWeight: 700 }} />
+            </Box>
+            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+              Natural speech call • Instant Lead qualification • WhatsApp calendar sync
+            </Typography>
+          </Box>
+        </Box>
+        <IconButton onClick={onClose} size="small" sx={{ color: 'text.secondary', '&:hover': { color: '#fff' } }}>
+          <Close fontSize="small" />
+        </IconButton>
+      </DialogTitle>
 
-        {/* Content Body */}
-        <div className="py-4 flex-1 overflow-y-auto space-y-4">
-          {callingState === 'idle' && (
-            <div className="space-y-4">
-              {/* Contact Card Summary */}
-              <div className="p-4 rounded-2xl bg-slate-800/60 border border-slate-700/60 flex items-center justify-between">
-                <div>
-                  <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Calling Target</span>
-                  <h4 className="text-sm font-bold text-white mt-0.5">{contact?.name || "Target Lead"}</h4>
-                  <p className="text-xs text-slate-400">{contact?.company} • +{contact?.phone}</p>
-                </div>
-                <span className="px-3 py-1 rounded-xl text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  {contact?.zohoModule || "Lead"}
-                </span>
-              </div>
+      {/* Content */}
+      <DialogContent sx={{ py: 2.5 }}>
+        {callingState === 'idle' && (
+          <Stack spacing={2.5}>
+            {/* Target Contact Card */}
+            <Paper variant="outlined" sx={{ p: 2, bgcolor: '#10243e', borderColor: '#1b3252', borderRadius: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Box>
+                <Typography variant="caption" sx={{ color: '#00B4D8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                  Target Lead
+                </Typography>
+                <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#fff' }}>
+                  {contact?.name || "Raveena Arun"}
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                  {contact?.company || "TechNova Corp"} • +{contact?.phone || "919876543210"}
+                </Typography>
+              </Box>
+              <Chip label={contact?.zohoModule || "Lead"} color="secondary" size="small" sx={{ fontWeight: 700 }} />
+            </Paper>
 
-              {/* Persona Selection */}
-              <div>
-                <label className="text-xs font-semibold text-slate-300 block mb-2">Select AI Voice Persona & Dialect:</label>
-                <div className="space-y-2">
-                  {personas.map((p) => (
-                    <div
+            {/* Persona Selection */}
+            <Box>
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, textTransform: 'uppercase', mb: 1, display: 'block' }}>
+                Select AI Voice Persona & Dialect:
+              </Typography>
+              <Stack spacing={1.5}>
+                {personas.map((p) => {
+                  const isSelected = selectedPersona === p.id;
+                  return (
+                    <Paper
                       key={p.id}
                       onClick={() => setSelectedPersona(p.id)}
-                      className={`p-3.5 rounded-2xl cursor-pointer transition-all border flex items-start gap-3 ${
-                        selectedPersona === p.id
-                          ? 'bg-rose-950/20 border-rose-500/50 shadow-md shadow-rose-950/30'
-                          : 'bg-slate-800/40 border-slate-800 hover:border-slate-700'
-                      }`}
+                      variant="outlined"
+                      sx={{
+                        p: 2,
+                        cursor: 'pointer',
+                        borderRadius: '14px',
+                        transition: 'all 0.2s',
+                        bgcolor: isSelected ? 'rgba(228, 37, 40, 0.08)' : '#10243e',
+                        borderColor: isSelected ? 'error.main' : '#1b3252',
+                        '&:hover': { borderColor: isSelected ? 'error.main' : '#2d527c' }
+                      }}
                     >
-                      <div className={`p-2 rounded-xl mt-0.5 ${selectedPersona === p.id ? 'bg-rose-500 text-white' : 'bg-slate-800 text-slate-400'}`}>
-                        <User className="w-4 h-4" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <h5 className="text-xs font-bold text-white">{p.name}</h5>
-                          <span className="text-[10px] font-medium text-slate-400 flex items-center gap-1">
-                            <Globe className="w-3 h-3" /> {p.language}
-                          </span>
-                        </div>
-                        <p className="text-xs text-slate-300 mt-1">{p.objective}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 700, color: isSelected ? '#ff6b6d' : '#fff' }}>
+                          {p.name}
+                        </Typography>
+                        <Chip label={p.language} size="small" icon={<Language fontSize="inherit" />} sx={{ height: 20, fontSize: '0.65rem' }} />
+                      </Box>
+                      <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
+                        {p.objective}
+                      </Typography>
+                    </Paper>
+                  );
+                })}
+              </Stack>
+            </Box>
 
-              {/* Dial Button */}
-              <button
-                onClick={handleStartCall}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 via-pink-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white text-sm font-bold flex items-center justify-center gap-2 shadow-xl shadow-rose-950/50 transition-all cursor-pointer"
-              >
-                <PhoneCall className="w-4 h-4" />
-                Trigger Live AI Voice Call Now
-              </button>
-            </div>
-          )}
+            {/* Trigger Button */}
+            <Button
+              variant="contained"
+              size="large"
+              color="error"
+              onClick={handleStartCall}
+              startIcon={<PhoneInTalk />}
+              sx={{
+                py: 1.5,
+                borderRadius: '14px',
+                fontWeight: 800,
+                fontSize: '0.9rem',
+                background: 'linear-gradient(135deg, #E42528 0%, #ff5255 100%)',
+                boxShadow: '0 8px 24px rgba(228, 37, 40, 0.35)'
+              }}
+            >
+              Trigger Live AI Voice Call Now
+            </Button>
+          </Stack>
+        )}
 
-          {(callingState === 'calling' || callingState === 'in_call' || callingState === 'completed') && (
-            <div className="space-y-4 animate-fade-in">
-              {/* Call Status Banner & Soundwave Animation */}
-              <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 flex flex-col items-center justify-center text-center relative overflow-hidden">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
-                  <span className="text-xs font-bold text-rose-400 uppercase tracking-widest">
-                    {callingState === 'calling' ? 'Dialing Contact...' : callingState === 'in_call' ? 'Live AI Conversation in Progress' : 'Call Completed & Lead Qualified'}
-                  </span>
-                </div>
+        {(callingState === 'calling' || callingState === 'in_call' || callingState === 'completed') && (
+          <Stack spacing={2}>
+            {/* Live Audio Visualizer Banner */}
+            <Paper variant="outlined" sx={{ p: 2.5, bgcolor: '#10243e', borderColor: '#1b3252', borderRadius: '16px', textAlign: 'center' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 1 }}>
+                <Chip
+                  label={callingState === 'calling' ? 'Dialing...' : callingState === 'in_call' ? 'Live AI Conversation' : 'Call Completed & Qualified'}
+                  color={callingState === 'completed' ? 'secondary' : 'error'}
+                  size="small"
+                  sx={{ fontWeight: 800 }}
+                />
+              </Box>
+              <Typography variant="h6" sx={{ fontWeight: 800, color: '#fff' }}>
+                {contact?.name} (+{contact?.phone})
+              </Typography>
+              <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                AI Persona: {personas.find(p => p.id === selectedPersona)?.name}
+              </Typography>
 
-                <h4 className="text-base font-bold text-white">{contact?.name} (+{contact?.phone})</h4>
-                <p className="text-xs text-slate-400 mt-0.5">AI Persona: {personas.find(p => p.id === selectedPersona)?.name}</p>
-
-                {/* Soundwave Visualizer */}
-                <div className="flex items-center justify-center gap-1.5 my-3 h-8">
-                  {[40, 75, 100, 60, 90, 45, 80, 100, 70, 50, 85, 60].map((h, i) => (
-                    <span
-                      key={i}
-                      style={{ height: callingState === 'in_call' ? `${h}%` : '20%' }}
-                      className="w-1 bg-gradient-to-t from-rose-500 to-indigo-400 rounded-full transition-all duration-300 animate-pulse"
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {/* Live Transcript Box */}
-              <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800/80 max-h-56 overflow-y-auto space-y-2.5">
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1">
-                  Live Speech-to-Text Transcript:
-                </span>
-                {callResult?.transcript.slice(0, transcriptIndex).map((line, idx) => (
-                  <div key={idx} className="text-xs leading-relaxed animate-fade-in">
-                    <span className={`font-semibold mr-1.5 ${line.speaker === 'AI Agent' ? 'text-rose-400' : 'text-emerald-400'}`}>
-                      [{line.speaker}]:
-                    </span>
-                    <span className="text-slate-200">{line.text}</span>
-                  </div>
+              {/* Soundwaves */}
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.8, my: 2, height: 32 }}>
+                {[30, 65, 90, 50, 85, 40, 75, 100, 60, 45, 80, 55].map((h, i) => (
+                  <Box
+                    key={i}
+                    sx={{
+                      width: 4,
+                      height: callingState === 'in_call' ? `${h}%` : '20%',
+                      bgcolor: 'error.main',
+                      borderRadius: 2,
+                      transition: 'height 0.3s ease'
+                    }}
+                  />
                 ))}
-              </div>
+              </Box>
+            </Paper>
 
-              {/* Post-Call Qualification Report */}
-              {callingState === 'completed' && callResult?.qualification && (
-                <div className="p-4 rounded-2xl bg-emerald-950/30 border border-emerald-500/30 space-y-2 animate-fade-in">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
-                      <CheckCircle2 className="w-4 h-4" /> AI Lead Score: {callResult.qualification.leadScore}
-                    </span>
-                    <span className="text-[10px] font-semibold text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full">
-                      Duration: {callResult.duration}
-                    </span>
-                  </div>
+            {/* Live Transcript Box */}
+            <Paper variant="outlined" sx={{ p: 2, bgcolor: '#071220', borderColor: '#1b3252', borderRadius: '14px', maxHeight: 220, overflowY: 'auto' }}>
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, textTransform: 'uppercase', mb: 1.5, display: 'block' }}>
+                Live Speech-to-Text Transcript:
+              </Typography>
+              <Stack spacing={1}>
+                {callResult?.transcript.slice(0, transcriptIndex).map((line, idx) => (
+                  <Box key={idx} sx={{ fontSize: '0.8rem', lineHeight: 1.5 }}>
+                    <Typography component="span" sx={{ fontWeight: 700, color: line.speaker === 'AI Agent' ? '#ff6b6d' : '#00A859', mr: 1 }}>
+                      [{line.speaker}]:
+                    </Typography>
+                    <Typography component="span" sx={{ color: '#f1f5f9' }}>
+                      {line.text}
+                    </Typography>
+                  </Box>
+                ))}
+              </Stack>
+            </Paper>
 
-                  <p className="text-xs text-slate-300">
-                    <strong className="text-white">Outcome:</strong> {callResult.qualification.nextAction}
-                  </p>
+            {/* Post-Call Report */}
+            {callingState === 'completed' && callResult?.qualification && (
+              <Paper variant="outlined" sx={{ p: 2, bgcolor: 'rgba(0, 168, 89, 0.1)', borderColor: 'secondary.main', borderRadius: '14px' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#00A859', display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    <CheckCircle fontSize="small" /> AI Lead Score: {callResult.qualification.leadScore}
+                  </Typography>
+                  <Chip label={`Duration: ${callResult.duration}`} size="small" variant="outlined" sx={{ height: 20, fontSize: '0.65rem' }} />
+                </Box>
+                <Typography variant="caption" sx={{ color: '#e2e8f0', display: 'block', mb: 1 }}>
+                  <strong>Outcome:</strong> {callResult.qualification.nextAction}
+                </Typography>
+                <Divider sx={{ my: 1, borderColor: 'rgba(0, 168, 89, 0.2)' }} />
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#6ee7b7' }}>
+                  <span>✅ Zoho CRM Lead: <strong>Demo Scheduled</strong></span>
+                  <span>✅ WhatsApp Invite: <strong>Sent</strong></span>
+                </Box>
+              </Paper>
+            )}
+          </Stack>
+        )}
+      </DialogContent>
 
-                  <div className="pt-2 border-t border-emerald-500/20 flex items-center justify-between text-xs text-emerald-300">
-                    <span>✅ Zoho CRM Lead Status: <strong>Demo Scheduled</strong></span>
-                    <span>✅ WhatsApp Invite: <strong>Sent</strong></span>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Footer */}
-        <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
-          <span className="text-[11px] text-slate-500 flex items-center gap-1">
-            <Zap className="w-3.5 h-3.5 text-amber-400" /> Powered by Gemini Voice Engine & Twilio
-          </span>
-          <button
-            onClick={onClose}
-            className="px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300"
-          >
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
+      {/* Footer */}
+      <DialogActions sx={{ px: 3, py: 2, borderTop: '1px solid #1b3252', justifyContent: 'space-between' }}>
+        <Typography variant="caption" sx={{ color: 'text.secondary', display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          <Bolt fontSize="small" sx={{ color: 'warning.main' }} /> Powered by Gemini 1.5 Realtime Voice & Twilio
+        </Typography>
+        <Button onClick={onClose} variant="outlined" sx={{ color: 'text.secondary', borderColor: '#1b3252' }}>
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
