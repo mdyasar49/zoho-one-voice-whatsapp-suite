@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { zohoSDK } from './services/zohoSdk';
 import { api, socket } from './services/api';
+import { ZohoOneTopNav } from './components/ZohoOneTopNav';
+import { ZohoOneAppRail } from './components/ZohoOneAppRail';
+import { ZohoCRMLeadWorkspace } from './components/ZohoCRMLeadWorkspace';
 import { LandingPage } from './components/LandingPage';
-import { ZohoOneProductBar } from './components/ZohoOneProductBar';
 import { Header } from './components/Header';
 import { ChatWindow } from './components/ChatWindow';
 import { AICopilotBar } from './components/AICopilotBar';
@@ -13,10 +15,9 @@ import { ZohoDeskModal } from './components/ZohoDeskModal';
 import { ZohoSignModal } from './components/ZohoSignModal';
 import { ZohoAnalyticsModal } from './components/ZohoAnalyticsModal';
 import { AIVoiceCallerModal } from './components/AIVoiceCallerModal';
-import { Globe, Layers } from 'lucide-react';
 
 export default function App() {
-  // Navigation Mode: 'landing' (Product Showcase Website) vs 'widget' (Embedded Zoho CRM Extension)
+  // Navigation Mode: 'landing' (Zoho One Official Style Showcase) vs 'widget' (Zoho CRM Native View)
   const [viewMode, setViewMode] = useState('landing');
 
   const [contacts, setContacts] = useState([]);
@@ -40,7 +41,6 @@ export default function App() {
     async function init() {
       const zohoData = await zohoSDK.initialize();
 
-      // If running inside live Zoho CRM iframe, default to widget mode directly
       if (zohoData.isZoho) {
         setViewMode('widget');
       }
@@ -171,10 +171,20 @@ export default function App() {
     }
   };
 
-  // If viewMode is 'landing', show full marketing showcase
-  if (viewMode === 'landing') {
-    return (
-      <div className="relative">
+  return (
+    <div className="flex flex-col min-h-screen bg-[#0b1a30] font-sans antialiased text-slate-100 selection:bg-rose-500 selection:text-white">
+      {/* Official Zoho One Global Header */}
+      <ZohoOneTopNav
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+        onOpenVoiceDemo={() => {
+          setViewMode('widget');
+          setActiveModal('voice');
+        }}
+      />
+
+      {viewMode === 'landing' ? (
+        /* Zoho One Official Style Product Landing Page (100% Scrollable) */
         <LandingPage
           onLaunchWidget={() => setViewMode('widget')}
           onOpenVoiceDemo={() => {
@@ -182,94 +192,70 @@ export default function App() {
             setActiveModal('voice');
           }}
         />
-
-        {/* Quick Float Switcher */}
-        <div className="fixed bottom-6 right-6 z-50">
-          <button
-            onClick={() => setViewMode('widget')}
-            className="px-4 py-2.5 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white text-xs font-bold border border-slate-700 shadow-2xl backdrop-blur-md flex items-center gap-2 hover:scale-105 transition-all"
-          >
-            <Layers className="w-4 h-4 text-rose-400" />
-            Switch to CRM Widget View
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Otherwise, render the Zoho CRM Embedded Widget interface
-  return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-slate-950 font-sans relative">
-      {/* Top Floating View Switcher */}
-      <div className="bg-slate-950 border-b border-slate-900 px-3 py-1 flex items-center justify-between text-[11px] text-slate-400">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-          <span className="font-semibold text-slate-300">Zoho CRM Extension Environment (Active)</span>
-        </div>
-        <button
-          onClick={() => setViewMode('landing')}
-          className="text-rose-400 hover:text-rose-300 font-semibold flex items-center gap-1"
-        >
-          <Globe className="w-3.5 h-3.5" /> Back to Product Showcase Website
-        </button>
-      </div>
-
-      {/* Zoho One Omnichannel Product Navigation */}
-      <ZohoOneProductBar
-        activeProduct={activeProduct}
-        setActiveProduct={setActiveProduct}
-        onOpenModal={(prodId) => {
-          if (prodId === 'crm') {
-            setActiveProduct('crm');
-          } else {
-            setActiveModal(prodId);
-          }
-        }}
-      />
-
-      <div className="flex flex-1 h-[calc(100vh-64px)] overflow-hidden">
-        {/* Contact Sidebar */}
-        <div className={`${showSidebar ? 'block' : 'hidden'} md:block h-full`}>
-          <ContactSidebar
-            contacts={contacts}
-            selectedPhone={currentContact?.phone}
-            onSelectContact={(c) => {
-              setCurrentContact(c);
-              setShowSidebar(false);
-            }}
-            onClose={() => setShowSidebar(false)}
-          />
-        </div>
-
-        {/* Main Chat Interface */}
-        <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-          <Header
-            currentContact={currentContact}
-            onRefresh={() => loadMessagesAndAI(currentContact?.phone)}
-            showSidebar={showSidebar}
-            setShowSidebar={setShowSidebar}
-            isAIMode={isAIMode}
-            setIsAIMode={setIsAIMode}
+      ) : (
+        /* Zoho One Native CRM View: Left App Rail + Center Lead Workspace + Right WhatsApp Widget */
+        <div className="flex flex-1 h-[calc(100vh-48px)] overflow-hidden">
+          {/* Left: Zoho One App Rail (CRM, Desk, Books, Sign, Analytics) */}
+          <ZohoOneAppRail
+            activeProduct={activeProduct}
+            setActiveProduct={setActiveProduct}
+            onOpenModal={(prodId) => setActiveModal(prodId)}
           />
 
-          {isAIMode && (
-            <AICopilotBar
-              suggestions={aiSuggestions}
-              onSelectReply={(text) => setInputDraft(text)}
-              loading={loadingAI}
-            />
+          {/* Optional: Contacts / Leads List Sidebar */}
+          {showSidebar && (
+            <div className="h-full z-40">
+              <ContactSidebar
+                contacts={contacts}
+                selectedPhone={currentContact?.phone}
+                onSelectContact={(c) => {
+                  setCurrentContact(c);
+                  setShowSidebar(false);
+                }}
+                onClose={() => setShowSidebar(false)}
+              />
+            </div>
           )}
 
-          <ChatWindow
-            messages={messages}
-            onSendMessage={handleSendMessage}
-            onOpenTemplates={() => setShowTemplates(true)}
-            inputDraft={inputDraft}
-            setInputDraft={setInputDraft}
-            loadingSend={loadingSend}
-          />
+          {/* Center: Zoho CRM Lead Details Workspace */}
+          <div className="hidden lg:flex flex-1 h-full overflow-hidden border-r border-[#172e50]">
+            <ZohoCRMLeadWorkspace
+              currentContact={currentContact}
+              onOpenVoiceDemo={() => setActiveModal('voice')}
+              onOpenTemplates={() => setShowTemplates(true)}
+            />
+          </div>
+
+          {/* Right: Native Embedded Zoho CRM WhatsApp & AI Copilot Panel */}
+          <div className="w-full lg:w-[460px] xl:w-[500px] flex flex-col h-full bg-[#0d1e38] border-l border-[#172e50] relative shrink-0">
+            <Header
+              currentContact={currentContact}
+              onRefresh={() => loadMessagesAndAI(currentContact?.phone)}
+              showSidebar={showSidebar}
+              setShowSidebar={setShowSidebar}
+              isAIMode={isAIMode}
+              setIsAIMode={setIsAIMode}
+            />
+
+            {isAIMode && (
+              <AICopilotBar
+                suggestions={aiSuggestions}
+                onSelectReply={(text) => setInputDraft(text)}
+                loading={loadingAI}
+              />
+            )}
+
+            <ChatWindow
+              messages={messages}
+              onSendMessage={handleSendMessage}
+              onOpenTemplates={() => setShowTemplates(true)}
+              inputDraft={inputDraft}
+              setInputDraft={setInputDraft}
+              loadingSend={loadingSend}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* WhatsApp Template Selector Modal */}
       {showTemplates && (
@@ -281,7 +267,7 @@ export default function App() {
         />
       )}
 
-      {/* AI Voice Caller Modal (The Missing Zoho One Piece) */}
+      {/* Autonomous AI Voice Caller Modal */}
       {activeModal === 'voice' && (
         <AIVoiceCallerModal
           contact={currentContact}
@@ -290,7 +276,7 @@ export default function App() {
         />
       )}
 
-      {/* Zoho Books Invoices Modal */}
+      {/* Zoho Books Modal */}
       {activeModal === 'books' && (
         <ZohoBooksModal
           contact={currentContact}
@@ -299,7 +285,7 @@ export default function App() {
         />
       )}
 
-      {/* Zoho Desk Support Tickets Modal */}
+      {/* Zoho Desk Modal */}
       {activeModal === 'desk' && (
         <ZohoDeskModal
           contact={currentContact}
@@ -308,7 +294,7 @@ export default function App() {
         />
       )}
 
-      {/* Zoho Sign e-Signature Modal */}
+      {/* Zoho Sign Modal */}
       {activeModal === 'sign' && (
         <ZohoSignModal
           contact={currentContact}
@@ -317,7 +303,7 @@ export default function App() {
         />
       )}
 
-      {/* Zoho Analytics Dashboard Modal */}
+      {/* Zoho Analytics Modal */}
       {activeModal === 'analytics' && (
         <ZohoAnalyticsModal
           onClose={() => setActiveModal(null)}
