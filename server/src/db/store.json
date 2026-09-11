@@ -8,12 +8,14 @@
       "company": "TechNova Corp",
       "zohoModule": "Leads",
       "zohoRecordId": "48291000000213001",
-      "leadStatus": "Negotiation",
-      "dealValue": "₹4,50,000",
+      "leadStatus": "Demo Scheduled",
+      "dealValue": "₹1,50,000",
       "tags": [
         "High Priority",
         "Enterprise",
-        "Zoho One Prospect"
+        "Zoho One Prospect",
+        "AI Voice Call Qualified",
+        "Hot Lead"
       ]
     },
     {
@@ -112,6 +114,15 @@
       "text": "Great! Also, please share the Zoho Sign NDA link so our legal team can sign it before the call.",
       "timestamp": "2026-09-11T15:32:15.890Z",
       "status": "received"
+    },
+    {
+      "contactPhone": "919876543210",
+      "direction": "outbound",
+      "sender": "AI Voice Post-Call Bot",
+      "text": "Hi Raveena Arun! It was great speaking with you on the call. As discussed, your live product demo is confirmed for Tomorrow at 11:00 AM. 📅 \n\nMeeting Link: https://meet.zoho.com/dem_2026_live \n\nLet us know if you need anything in the meantime!",
+      "status": "sent",
+      "id": "msg_1789141876844_qd4b",
+      "timestamp": "2026-09-11T15:51:16.844Z"
     }
   ],
   "templates": [

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { zohoSDK } from './services/zohoSdk';
 import { api, socket } from './services/api';
+import { LandingPage } from './components/LandingPage';
 import { ZohoOneProductBar } from './components/ZohoOneProductBar';
 import { Header } from './components/Header';
 import { ChatWindow } from './components/ChatWindow';
@@ -12,8 +13,12 @@ import { ZohoDeskModal } from './components/ZohoDeskModal';
 import { ZohoSignModal } from './components/ZohoSignModal';
 import { ZohoAnalyticsModal } from './components/ZohoAnalyticsModal';
 import { AIVoiceCallerModal } from './components/AIVoiceCallerModal';
+import { Globe, Layers } from 'lucide-react';
 
 export default function App() {
+  // Navigation Mode: 'landing' (Product Showcase Website) vs 'widget' (Embedded Zoho CRM Extension)
+  const [viewMode, setViewMode] = useState('landing');
+
   const [contacts, setContacts] = useState([]);
   const [currentContact, setCurrentContact] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -34,6 +39,11 @@ export default function App() {
   useEffect(() => {
     async function init() {
       const zohoData = await zohoSDK.initialize();
+
+      // If running inside live Zoho CRM iframe, default to widget mode directly
+      if (zohoData.isZoho) {
+        setViewMode('widget');
+      }
 
       try {
         const [contactList, templateList] = await Promise.all([
@@ -161,8 +171,49 @@ export default function App() {
     }
   };
 
+  // If viewMode is 'landing', show full marketing showcase
+  if (viewMode === 'landing') {
+    return (
+      <div className="relative">
+        <LandingPage
+          onLaunchWidget={() => setViewMode('widget')}
+          onOpenVoiceDemo={() => {
+            setViewMode('widget');
+            setActiveModal('voice');
+          }}
+        />
+
+        {/* Quick Float Switcher */}
+        <div className="fixed bottom-6 right-6 z-50">
+          <button
+            onClick={() => setViewMode('widget')}
+            className="px-4 py-2.5 rounded-full bg-slate-900/90 hover:bg-slate-800 text-white text-xs font-bold border border-slate-700 shadow-2xl backdrop-blur-md flex items-center gap-2 hover:scale-105 transition-all"
+          >
+            <Layers className="w-4 h-4 text-rose-400" />
+            Switch to CRM Widget View
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Otherwise, render the Zoho CRM Embedded Widget interface
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-slate-950 font-sans">
+    <div className="flex flex-col h-screen w-screen overflow-hidden bg-slate-950 font-sans relative">
+      {/* Top Floating View Switcher */}
+      <div className="bg-slate-950 border-b border-slate-900 px-3 py-1 flex items-center justify-between text-[11px] text-slate-400">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span className="font-semibold text-slate-300">Zoho CRM Extension Environment (Active)</span>
+        </div>
+        <button
+          onClick={() => setViewMode('landing')}
+          className="text-rose-400 hover:text-rose-300 font-semibold flex items-center gap-1"
+        >
+          <Globe className="w-3.5 h-3.5" /> Back to Product Showcase Website
+        </button>
+      </div>
+
       {/* Zoho One Omnichannel Product Navigation */}
       <ZohoOneProductBar
         activeProduct={activeProduct}
@@ -176,7 +227,7 @@ export default function App() {
         }}
       />
 
-      <div className="flex flex-1 h-[calc(100vh-38px)] overflow-hidden">
+      <div className="flex flex-1 h-[calc(100vh-64px)] overflow-hidden">
         {/* Contact Sidebar */}
         <div className={`${showSidebar ? 'block' : 'hidden'} md:block h-full`}>
           <ContactSidebar
